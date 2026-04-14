@@ -8,7 +8,7 @@ export default function AIAgentPage() {
     <main className="max-w-[1200px] mx-auto px-6 pt-24 pb-12 space-y-5">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-white text-glow">AI Agent</h1>
-        <p className="text-sm text-white/40">
+        <p className="text-sm text-white/45">
           AI-powered portfolio analysis and execution
         </p>
       </div>

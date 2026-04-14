@@ -28,17 +28,17 @@ const items = [
 export function QuickNavCards() {
   return (
     <div className="pt-2">
-      {/* Separator */}
-      <div className="border-t border-white/[0.06] mb-5" />
+      {/* Gradient separator */}
+      <div className="divider-gradient mb-5" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="group flex items-center gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4 transition-all duration-300 hover:bg-white/[0.05] hover:border-white/[0.12]"
+            className="group flex items-center gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4 transition-colors hover:bg-white/[0.05] hover:border-white/[0.10]"
           >
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 flex items-center justify-center text-[#a78bfa] group-hover:bg-[#8b5cf6]/20 transition-colors duration-300">
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 group-hover:text-white/70 transition-colors">
               {item.icon}
             </div>
             <div className="flex-1 min-w-0">

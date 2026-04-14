@@ -211,7 +211,7 @@ export function MarketList({ heldAddresses }: MarketListProps) {
               onClick={() => setHeldOnly((v) => !v)}
               className={`rounded-lg px-3 py-1.5 text-xs font-mono border transition-colors ${
                 heldOnly
-                  ? "bg-[#8b5cf6]/15 border-[#8b5cf6]/30 text-[#a78bfa]"
+                  ? "bg-white/[0.08] border-white/[0.14] text-white/80"
                   : "bg-white/[0.04] border-white/[0.08] text-white/40 hover:bg-white/[0.06] hover:border-white/[0.12]"
               }`}
             >
@@ -300,7 +300,7 @@ export function MarketList({ heldAddresses }: MarketListProps) {
                   <div className="inline-flex flex-col items-center gap-3">
                     <div className="relative w-8 h-8">
                       <div className="absolute inset-0 rounded-full border-2 border-white/10" />
-                      <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#8b5cf6] animate-spin" />
+                      <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-white/50 animate-spin" />
                     </div>
                     <span className="text-xs">Loading vaults...</span>
                   </div>
@@ -320,15 +320,15 @@ export function MarketList({ heldAddresses }: MarketListProps) {
                 return (
                   <tr
                     key={`${vault.chainId}-${vault.address}`}
-                    className={`border-t border-white/[0.04] transition-all duration-300 hover:bg-white/[0.03] ${
-                      isHeld ? "bg-gradient-to-r from-[#8b5cf6]/[0.04] to-transparent" : ""
+                    className={`border-t border-white/[0.04] transition-colors hover:bg-white/[0.03] ${
+                      isHeld ? "bg-white/[0.02]" : ""
                     }`}
                   >
                     <td className="px-6 py-3.5">
                       <span className="flex items-center gap-2">
                         <span className="font-medium text-white/80">{vault.name}</span>
                         {isHeld && (
-                          <span className="text-[9px] font-mono font-medium uppercase tracking-[0.12em] rounded bg-[#8b5cf6]/15 border border-[#8b5cf6]/20 px-1.5 py-0.5 text-[#a78bfa]">
+                          <span className="text-[9px] font-mono font-medium uppercase tracking-[0.12em] rounded bg-white/[0.06] border border-white/[0.10] px-1.5 py-0.5 text-white/60">
                             Held
                           </span>
                         )}
@@ -344,7 +344,7 @@ export function MarketList({ heldAddresses }: MarketListProps) {
                     <td className="px-3 py-3.5 text-right text-white/50 font-mono text-xs">
                       {(reward * 100).toFixed(2)}%
                     </td>
-                    <td className="px-3 py-3.5 text-right font-mono text-xs font-semibold bg-gradient-to-r from-[#06b6d4] to-[#8b5cf6] bg-clip-text text-transparent">
+                    <td className="px-3 py-3.5 text-right font-mono text-xs font-semibold text-[var(--pink)]">
                       {(totalApy * 100).toFixed(2)}%
                     </td>
                     <td className="px-6 py-3.5 text-right text-white/50 font-mono text-xs">

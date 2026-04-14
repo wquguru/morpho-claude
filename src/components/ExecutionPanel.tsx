@@ -66,7 +66,7 @@ export function ExecutionPanel() {
       <button
         onClick={handleExecute}
         disabled={isExecuting || steps.length === 0}
-        className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold text-white disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:transform-none"
+        className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:transform-none"
       >
         {isExecuting ? (
           <span className="inline-flex items-center gap-2">

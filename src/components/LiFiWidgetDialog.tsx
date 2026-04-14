@@ -10,6 +10,9 @@ import {
 import { useWidgetExecution } from "@/contexts/WidgetExecutionContext";
 import { useLiFiWidgetEvents } from "@/hooks/useWidgetEvents";
 import type { WidgetConfig } from "@lifi/widget";
+import { EthereumProvider } from "@lifi/widget-provider-ethereum";
+
+const ethereumProvider = EthereumProvider();
 
 const LiFiWidget = dynamic(
   () => import("@lifi/widget").then((m) => m.LiFiWidget),
@@ -35,7 +38,7 @@ export function LiFiWidgetDialog() {
       appearance: "dark",
       theme: {
         palette: {
-          primary: { main: "#8b5cf6" },
+          primary: { main: "#f7c2ff" },
           secondary: { main: "#06b6d4" },
           background: {
             default: "#0a0a0f",
@@ -54,9 +57,7 @@ export function LiFiWidgetDialog() {
       },
       chains: { allow: [1, 8453] },
       hiddenUI: ["poweredBy"],
-      walletConfig: {
-        forceInternalWalletManagement: true,
-      },
+      providers: [ethereumProvider],
     };
 
     if (mode === "deposit" && allocation?.recommendedAllocation?.[0]) {

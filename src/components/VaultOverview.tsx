@@ -34,7 +34,7 @@ export function VaultOverview() {
     <div className="glass-card rounded-2xl p-6">
       {/* Address bar */}
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] rounded-md bg-gradient-to-r from-[#0186DA]/20 to-[#B631A7]/20 text-[#a78bfa] px-2.5 py-1 border border-[#8b5cf6]/20">
+        <span className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] rounded-md bg-white/[0.06] text-white/60 px-2.5 py-1 border border-white/[0.08]">
           {isDemo ? "Demo" : "Live"}
         </span>
         <a
@@ -71,7 +71,7 @@ export function VaultOverview() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-5 hover:bg-white/[0.05] transition-all duration-300">
+        <div className="stat-card p-5">
           <p className="text-xs font-medium text-white/40 mb-2">Total Assets</p>
           <p className="text-2xl font-semibold text-white text-glow">
             {isLoading
@@ -82,12 +82,12 @@ export function VaultOverview() {
 
         <Dialog>
           <DialogTrigger>
-            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-5 cursor-pointer hover:bg-white/[0.05] hover:border-[#8b5cf6]/20 transition-all duration-300 text-left group">
+            <div className="stat-card p-5 cursor-pointer text-left group">
               <p className="text-xs font-medium text-white/40 mb-2 inline-flex items-center gap-1.5">
                 Weighted APY
                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 group-hover:opacity-70 transition-opacity"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
               </p>
-              <p className="text-2xl font-semibold bg-gradient-to-r from-[#06b6d4] to-[#8b5cf6] bg-clip-text text-transparent">
+              <p className="text-2xl font-semibold text-[var(--pink)]">
                 {isLoading ? "..." : `${apyPercent.toFixed(2)}%`}
               </p>
             </div>
@@ -114,7 +114,7 @@ export function VaultOverview() {
                         <div key={i} className="px-4 py-3 space-y-1 hover:bg-white/[0.02] transition-colors">
                           <div className="flex justify-between items-center">
                             <span className="font-medium text-white">{p.name}</span>
-                            <span className="bg-gradient-to-r from-[#06b6d4] to-[#8b5cf6] bg-clip-text text-transparent font-semibold">
+                            <span className="text-[var(--pink)] font-semibold">
                               {(p.apy * 100).toFixed(2)}%
                             </span>
                           </div>
@@ -128,15 +128,15 @@ export function VaultOverview() {
                   </div>
                 </div>
               )}
-              <div className="rounded-xl bg-gradient-to-r from-[#0186DA]/10 to-[#B631A7]/10 border border-[#8b5cf6]/20 p-4 flex justify-between items-center">
+              <div className="rounded-xl bg-white/[0.04] border border-white/[0.06] p-4 flex justify-between items-center">
                 <span className="font-semibold text-white">Total Weighted APY</span>
-                <span className="text-xl font-bold bg-gradient-to-r from-[#06b6d4] to-[#8b5cf6] bg-clip-text text-transparent">{apyPercent.toFixed(2)}%</span>
+                <span className="text-xl font-bold text-[var(--pink)]">{apyPercent.toFixed(2)}%</span>
               </div>
             </div>
           </DialogContent>
         </Dialog>
 
-        <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-5 hover:bg-white/[0.05] transition-all duration-300">
+        <div className="stat-card p-5">
           <p className="text-xs font-medium text-white/40 mb-2">Positions</p>
           <p className="text-2xl font-semibold text-white text-glow">
             {isLoading ? "..." : positions.length}

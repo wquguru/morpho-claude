@@ -75,9 +75,9 @@ export function AIRecommendation() {
               key={profile}
               onClick={() => setRiskProfile(profile)}
               disabled={isAnalyzing}
-              className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-all duration-300 capitalize ${
+              className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-colors capitalize ${
                 riskProfile === profile
-                  ? "bg-gradient-to-r from-[#0186DA]/20 to-[#B631A7]/20 text-white border border-[#8b5cf6]/20 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                  ? "bg-white/[0.08] text-white border border-white/[0.10]"
                   : "text-white/35 hover:text-white/60"
               }`}
             >
@@ -91,7 +91,7 @@ export function AIRecommendation() {
       <button
         onClick={() => analyze(riskProfile)}
         disabled={isAnalyzing}
-        className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold text-white disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:transform-none"
+        className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:transform-none"
       >
         {isAnalyzing ? (
           <span className="inline-flex items-center gap-2">
@@ -125,7 +125,7 @@ export function AIRecommendation() {
               </span>
             )}
             {analysis.recommendation === "review" && (
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 px-4 py-1.5 text-[#a78bfa] font-medium text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/[0.06] border border-white/[0.10] px-4 py-1.5 text-white/70 font-medium text-xs">
                 Review Needed
               </span>
             )}
@@ -139,10 +139,10 @@ export function AIRecommendation() {
               { label: "Gas Cost", value: `$${analysis.estimatedGasCost.toFixed(2)}` },
               { label: "Break-even", value: `${analysis.breakEvenDays}d` },
             ].map((m) => (
-              <div key={m.label} className="rounded-xl bg-white/[0.03] border border-white/[0.05] p-3 text-center hover:bg-white/[0.05] transition-all duration-300">
+              <div key={m.label} className="stat-card p-3 text-center">
                 <p className="text-[10px] font-mono uppercase tracking-[0.12em] text-white/30 mb-1">{m.label}</p>
                 <p className={`text-base font-bold ${
-                  m.gradient ? "bg-gradient-to-r from-[#06b6d4] to-[#8b5cf6] bg-clip-text text-transparent" :
+                  m.gradient ? "text-[var(--pink)]" :
                   m.warn ? "text-amber-400" : "text-white/80"
                 }`}>
                   {m.value}
@@ -160,7 +160,7 @@ export function AIRecommendation() {
           {analysis.recommendation === "execute" && (
             <button
               onClick={() => openForDeposit(analysis)}
-              className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold text-white"
+              className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold"
             >
               Execute via LI.FI
             </button>

@@ -9,7 +9,7 @@ import {
   Legend,
 } from "recharts";
 
-const COLORS = ["#8b5cf6", "#06b6d4", "#f59e0b", "#ec4899", "#10b981"];
+const COLORS = ["#E8578A", "#06b6d4", "#f59e0b", "#10b981", "#6366f1"];
 
 interface AllocationDataItem {
   name: string;
@@ -53,7 +53,7 @@ function CustomTooltip({ active, payload }: any) {
       {d.apy != null && d.apy > 0 && (
         <div className="flex justify-between gap-4">
           <span className="text-white/40">APY</span>
-          <span className="font-medium bg-gradient-to-r from-[#06b6d4] to-[#8b5cf6] bg-clip-text text-transparent">{d.apy.toFixed(2)}%</span>
+          <span className="font-medium text-[var(--pink)]">{d.apy.toFixed(2)}%</span>
         </div>
       )}
       {d.chainId != null && (

@@ -58,23 +58,21 @@ export default function LandingPage() {
         <div className="max-w-3xl">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.04] border border-white/[0.08] px-4 py-1.5 mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] animate-pulse-glow" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-glow" />
             <span className="text-xs font-mono text-white/50">
               DeFi Mullet Hackathon #1 &mdash; AI x Earn Track
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-[1.1] tracking-tight text-glow">
+          <h1 className="text-5xl md:text-6xl font-bold text-white leading-[1.1] tracking-tight">
             AI-Powered Yield
             <br />
-            <span className="bg-gradient-to-r from-[#0186DA] via-[#8b5cf6] to-[#B631A7] bg-clip-text text-transparent">
-              Optimization
-            </span>
+            Optimization
             <br />
-            for Morpho Vaults
+            for <span className="text-[var(--pink)]">Morpho</span> Vaults
           </h1>
 
-          <p className="mt-6 text-lg text-white/40 max-w-xl leading-relaxed">
+          <p className="mt-6 text-lg text-white/45 max-w-xl leading-relaxed">
             MorphoClaude replaces manual vault optimization with multi-agent AI analysis.
             Three specialized subagents evaluate risk, yield, and gas costs in parallel
             — then execute optimal rebalancing in one click.
@@ -84,13 +82,13 @@ export default function LandingPage() {
           <div className="flex items-center gap-4 mt-10">
             <Link
               href="/dashboard"
-              className="btn-gradient rounded-xl px-8 py-3.5 text-sm font-semibold text-white inline-block"
+              className="btn-gradient rounded-xl px-8 py-3.5 text-sm font-semibold inline-block"
             >
               Launch App
             </Link>
             <Link
               href="/vaults"
-              className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-8 py-3.5 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/[0.06] transition-all duration-300 inline-block"
+              className="btn-outline-glow rounded-xl px-8 py-3.5 text-sm font-semibold text-white/70 hover:text-white inline-block"
             >
               Explore Vaults
             </Link>
@@ -101,7 +99,7 @@ export default function LandingPage() {
         <div className="hidden lg:block absolute top-36 right-0 w-[340px]">
           <div className="glass-card rounded-2xl p-5 text-xs font-mono space-y-2 text-white/30">
             <p className="text-white/60 text-sm font-sans font-semibold mb-3">Agent Architecture</p>
-            <p className="text-[#a78bfa]">Orchestrator</p>
+            <p className="text-white/60">Orchestrator</p>
             <p className="pl-3">├─ MCP: morpho-tools</p>
             <p className="pl-3">├─ MCP: lifi-tools</p>
             <p className="pl-3">├─ <span className="text-[#06b6d4]">risk-analyzer</span></p>
@@ -118,20 +116,20 @@ export default function LandingPage() {
       {/* Features */}
       <section className="max-w-[1200px] mx-auto px-6 py-16">
         <div className="border-t border-white/[0.06] pt-16">
-          <h2 className="text-sm font-mono uppercase tracking-[0.16em] text-white/30 mb-10">
+          <h2 className="section-label mb-10">
             How it works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {FEATURES.map((f) => (
               <div
                 key={f.title}
-                className="group rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all duration-300"
+                className="group rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 hover:bg-white/[0.04] hover:border-white/[0.10] transition-colors"
               >
-                <div className="w-10 h-10 rounded-lg bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 flex items-center justify-center text-[#a78bfa] mb-4 group-hover:bg-[#8b5cf6]/15 transition-colors duration-300">
+                <div className="w-10 h-10 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 mb-4 group-hover:text-white/70 transition-colors">
                   {f.icon}
                 </div>
                 <h3 className="text-base font-semibold text-white mb-2">{f.title}</h3>
-                <p className="text-sm text-white/35 leading-relaxed">{f.desc}</p>
+                <p className="text-sm text-white/40 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -141,14 +139,14 @@ export default function LandingPage() {
       {/* Tech Stack */}
       <section className="max-w-[1200px] mx-auto px-6 py-16">
         <div className="border-t border-white/[0.06] pt-16">
-          <h2 className="text-sm font-mono uppercase tracking-[0.16em] text-white/30 mb-10">
+          <h2 className="section-label mb-10">
             Built with
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {STACK.map((s) => (
               <div
                 key={s.label}
-                className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3.5 text-center hover:bg-white/[0.04] transition-all duration-300"
+                className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3.5 text-center hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300"
               >
                 <p className="text-sm font-semibold text-white/80">{s.label}</p>
                 <p className="text-[10px] text-white/30 mt-0.5">{s.desc}</p>
@@ -160,13 +158,14 @@ export default function LandingPage() {
 
       {/* Bottom CTA */}
       <section className="max-w-[1200px] mx-auto px-6 pt-8 pb-20">
-        <div className="border-t border-white/[0.06] pt-16 text-center">
+        <div className="pt-16 text-center">
+          <div className="divider-gradient mb-16" />
           <p className="text-sm text-white/30 mb-6">
             Connect your wallet to view positions, or explore with the demo wallet
           </p>
           <Link
             href="/dashboard"
-            className="btn-gradient rounded-xl px-10 py-4 text-sm font-semibold text-white inline-block"
+            className="btn-gradient rounded-xl px-10 py-4 text-sm font-semibold inline-block"
           >
             Enter Dashboard
           </Link>
