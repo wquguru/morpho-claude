@@ -21,7 +21,7 @@ export interface EarnVault {
 
 export async function fetchAllVaults(
   chains: string = "eth,base",
-  tokens: string = "USDC"
+  tokens?: string
 ): Promise<EarnVault[]> {
   const allVaults: EarnVault[] = [];
   let cursor: string | undefined;
@@ -30,7 +30,7 @@ export async function fetchAllVaults(
     const url = new URL(`${EARN_API}/v1/earn/vaults`);
     url.searchParams.set("chains", chains);
     url.searchParams.set("protocols", "morpho");
-    url.searchParams.set("tokens", tokens);
+    if (tokens) url.searchParams.set("tokens", tokens);
     url.searchParams.set("sort", "apy");
     url.searchParams.set("order", "desc");
     if (cursor) url.searchParams.set("cursor", cursor);

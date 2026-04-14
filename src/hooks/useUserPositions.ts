@@ -25,8 +25,8 @@ export function useUserPositions(address?: string) {
 
   // Fetch vaults to cross-reference APY
   const { data: vaults, isLoading: vaultsLoading } = useQuery({
-    queryKey: ["allVaults"],
-    queryFn: () => fetchAllVaults("eth,base", "USDC"),
+    queryKey: ["vaults"],
+    queryFn: () => fetchAllVaults("eth,base"),
     refetchInterval: 300_000,
   });
 
