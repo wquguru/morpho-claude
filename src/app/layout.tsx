@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { Providers } from "@/components/Providers";
+import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -32,9 +34,12 @@ export default function RootLayout({
       <body className="min-h-screen bg-[#0a0a0f] text-[#f0f0f5]">
         {/* Aurora gradient background */}
         <div className="aurora-bg" />
-        <Providers>
-          {children}
-        </Providers>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
+        </AppRouterCacheProvider>
         <Toaster />
       </body>
     </html>

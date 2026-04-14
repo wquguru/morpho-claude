@@ -5,8 +5,10 @@ import { WagmiProvider, createConfig, http } from "wagmi";
 import { mainnet, base } from "wagmi/chains";
 import { useState, type ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { WidgetExecutionProvider } from "@/contexts/WidgetExecutionContext";
+import { LiFiWidgetDialog } from "@/components/LiFiWidgetDialog";
 
-const wagmiConfig = createConfig({
+export const wagmiConfig = createConfig({
   chains: [mainnet, base],
   transports: {
     [mainnet.id]: http(
@@ -28,7 +30,10 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>{children}</TooltipProvider>
+        <WidgetExecutionProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+          <LiFiWidgetDialog />
+        </WidgetExecutionProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

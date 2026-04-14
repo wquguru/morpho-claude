@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAllocationAnalysis } from "@/hooks/useAllocationAnalysis";
+import { useWidgetExecution } from "@/contexts/WidgetExecutionContext";
 
 function FormattedExplanation({ text }: { text: string }) {
   const lines = text.split(/\n/).filter((l) => l.trim());
@@ -35,15 +36,36 @@ function FormattedExplanation({ text }: { text: string }) {
   );
 }
 
+function timeAgo(ts: number): string {
+  const diff = Date.now() - ts;
+  const mins = Math.floor(diff / 60_000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
 export function AIRecommendation() {
   const [riskProfile, setRiskProfile] = useState<
     "conservative" | "balanced" | "aggressive"
   >("balanced");
-  const { analysis, isAnalyzing, error, analyze } = useAllocationAnalysis();
+  const { analysis, isAnalyzing, error, analyzedAt, analyze } =
+    useAllocationAnalysis();
+  const { openForDeposit } = useWidgetExecution();
+
+  const hasResult = !!analysis;
 
   return (
     <div className="h-full glass-card rounded-2xl p-5 flex flex-col">
-      <h3 className="text-sm font-semibold text-white/80 mb-4">AI Recommendation</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-semibold text-white/80">AI Recommendation</h3>
+        {analyzedAt && (
+          <span className="text-[10px] font-mono text-white/25">
+            {timeAgo(analyzedAt)}
+          </span>
+        )}
+      </div>
 
       {/* Risk Profile — segmented control */}
       <div className="flex gap-1 p-1 bg-white/[0.04] border border-white/[0.06] rounded-xl mb-4">
@@ -52,6 +74,7 @@ export function AIRecommendation() {
             <button
               key={profile}
               onClick={() => setRiskProfile(profile)}
+              disabled={isAnalyzing}
               className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-all duration-300 capitalize ${
                 riskProfile === profile
                   ? "bg-gradient-to-r from-[#0186DA]/20 to-[#B631A7]/20 text-white border border-[#8b5cf6]/20 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
@@ -75,6 +98,8 @@ export function AIRecommendation() {
             <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
             Analyzing...
           </span>
+        ) : hasResult ? (
+          "Re-analyze"
         ) : (
           "Analyze Optimal Allocation"
         )}
@@ -130,6 +155,16 @@ export function AIRecommendation() {
           <div className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-4">
             <FormattedExplanation text={analysis.aiExplanation} />
           </div>
+
+          {/* Execute via LI.FI Widget */}
+          {analysis.recommendation === "execute" && (
+            <button
+              onClick={() => openForDeposit(analysis)}
+              className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold text-white"
+            >
+              Execute via LI.FI
+            </button>
+          )}
         </div>
       )}
     </div>
