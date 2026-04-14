@@ -54,6 +54,9 @@ export function LiFiWidgetDialog() {
       },
       chains: { allow: [1, 8453] },
       hiddenUI: ["poweredBy"],
+      walletConfig: {
+        forceInternalWalletManagement: true,
+      },
     };
 
     if (mode === "deposit" && allocation?.recommendedAllocation?.[0]) {
