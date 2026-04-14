@@ -9,18 +9,11 @@ interface StepStatus {
   txHash?: string;
 }
 
-const STATUS_STYLES = {
-  pending: "text-white/38",
-  signing: "text-[#FFBF17]",
-  confirmed: "text-[#21C95E]",
-  failed: "text-[#FF593C]",
-};
-
-const STATUS_LABELS = {
-  pending: "Pending",
-  signing: "Awaiting signature...",
-  confirmed: "Confirmed",
-  failed: "Failed",
+const STATUS_CONFIG = {
+  pending: { color: "text-white/30", dot: "bg-white/20", label: "Pending" },
+  signing: { color: "text-amber-400", dot: "bg-amber-400 animate-pulse-glow", label: "Awaiting signature..." },
+  confirmed: { color: "text-emerald-400", dot: "bg-emerald-400", label: "Confirmed" },
+  failed: { color: "text-red-400", dot: "bg-red-400", label: "Failed" },
 };
 
 export function ExecutionPanel() {
@@ -33,44 +26,47 @@ export function ExecutionPanel() {
   };
 
   return (
-    <div className="rounded-3xl bg-[#1F1F1F] border border-white/10 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">Execution</h3>
+    <div className="glass-card rounded-2xl p-6">
+      <h3 className="text-sm font-semibold text-white/80 mb-5">Execution</h3>
 
       {steps.length === 0 ? (
-        <div className="text-center py-8 text-white/38 text-sm">
-          Run AI analysis first to generate reallocation steps
+        <div className="text-center py-10 text-white/25 text-sm">
+          <div className="inline-flex flex-col items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/20"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+            </div>
+            <p>Run AI analysis first to generate reallocation steps</p>
+          </div>
         </div>
       ) : (
-        <div className="space-y-2 mb-4">
-          {steps.map((s, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.04] border border-white/5"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full ${
-                  s.status === "confirmed" ? "bg-[#21C95E]" :
-                  s.status === "failed" ? "bg-[#FF593C]" :
-                  s.status === "signing" ? "bg-[#FFBF17] animate-pulse" :
-                  "bg-white/20"
-                }`} />
-                <div>
-                  <span className="font-medium text-white capitalize">{s.step.type}</span>
-                  <span className="text-white/38 ml-2">{s.step.amount} USDC</span>
+        <div className="space-y-2 mb-5">
+          {steps.map((s, i) => {
+            const config = STATUS_CONFIG[s.status];
+            return (
+              <div
+                key={i}
+                className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-all duration-300"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-2 rounded-full ${config.dot}`} />
+                  <div>
+                    <span className="font-medium text-white/80 capitalize">{s.step.type}</span>
+                    <span className="text-white/30 ml-2 font-mono text-xs">{s.step.amount} USDC</span>
+                  </div>
                 </div>
+                <span className={`text-xs font-medium ${config.color}`}>
+                  {config.label}
+                </span>
               </div>
-              <span className={`text-xs font-medium ${STATUS_STYLES[s.status]}`}>
-                {STATUS_LABELS[s.status]}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       <button
         onClick={handleExecute}
         disabled={isExecuting || steps.length === 0}
-        className="w-full py-3.5 rounded-2xl text-sm font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white text-[#131313] hover:bg-white/90 active:scale-[0.98]"
+        className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold text-white disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:transform-none"
       >
         {isExecuting ? (
           <span className="inline-flex items-center gap-2">

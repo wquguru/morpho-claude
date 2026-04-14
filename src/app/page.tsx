@@ -14,7 +14,6 @@ export default function Dashboard() {
   const address = connectedAddress ?? DEMO_WALLET;
   const { positions } = useUserPositions(address);
 
-  // Build current allocation chart data from normalized positions
   const totalValue = positions.reduce((s, p) => s + p.balanceUsd, 0);
   const currentPct = positions.map((p) => ({
     name: p.name,
@@ -25,39 +24,45 @@ export default function Dashboard() {
     assetSymbol: p.assetSymbol,
   }));
 
-  // Build set of held vault addresses for highlighting in MarketList
   const heldVaultAddresses = new Set(
     positions.map((p) => p.address.toLowerCase())
   );
 
   return (
-    <div className="min-h-screen">
-      {/* Header — Uniswap-style sticky nav */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#131313]/80 border-b border-white/5">
-        <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#FC74FE] to-[#FF007A] flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
+    <div className="min-h-screen relative">
+      {/* Header */}
+      <header className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/70 border-b border-white/[0.06]">
+        <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            {/* Logo — LI.FI style: icon box + text + badge */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#1a1a24] border border-white/[0.08] flex items-center justify-center">
+                <span className="font-mono font-bold text-sm text-white/90 tracking-tight">MC</span>
               </div>
-              <span className="text-lg font-semibold text-white">MorphoClaude</span>
+              <span className="text-xl font-bold text-white tracking-tight">Morpho<span className="text-white/50">Claude</span></span>
+              <span className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] rounded-lg bg-white/[0.06] border border-white/[0.08] px-2.5 py-1.5 text-[#a78bfa]">
+                Yield
+              </span>
             </div>
-            {/* Nav links */}
+            {/* Nav */}
             <nav className="hidden md:flex items-center gap-1">
-              <a href="#" className="px-3 py-2 rounded-xl text-sm font-medium text-white hover:bg-white/8 transition-colors">
-                Dashboard
-              </a>
-              <a href="#" className="px-3 py-2 rounded-xl text-sm font-medium text-white/55 hover:text-white hover:bg-white/8 transition-colors">
-                Vaults
-              </a>
-              <a href="#" className="px-3 py-2 rounded-xl text-sm font-medium text-white/55 hover:text-white hover:bg-white/8 transition-colors">
-                AI Agent
-              </a>
+              {["Dashboard", "Vaults", "AI Agent"].map((item, i) => (
+                <a
+                  key={item}
+                  href="#"
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    i === 0
+                      ? "text-white bg-white/[0.06]"
+                      : "text-white/35 hover:text-white/70 hover:bg-white/[0.04]"
+                  }`}
+                >
+                  {item}
+                </a>
+              ))}
             </nav>
           </div>
-          {/* Connect button */}
-          <button className="rounded-full bg-white text-[#131313] px-5 py-2.5 text-sm font-semibold hover:bg-white/90 transition-colors">
+          {/* Connect Wallet */}
+          <button className="btn-gradient rounded-xl px-5 py-2.5 text-sm font-semibold text-white">
             {connectedAddress
               ? `${connectedAddress.slice(0, 6)}...${connectedAddress.slice(-4)}`
               : "Connect Wallet"}
@@ -65,22 +70,17 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="max-w-[1200px] mx-auto px-4 py-6 space-y-4">
-        {/* Top: Overview */}
+      {/* Main */}
+      <main className="max-w-[1200px] mx-auto px-6 pt-24 pb-12 space-y-5">
         <VaultOverview />
 
-        {/* Middle: Charts + AI */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <AllocationChart type="current" data={currentPct} />
           <AIRecommendation />
           <AllocationChart type="recommended" />
         </div>
 
-        {/* Market List */}
         <MarketList heldAddresses={heldVaultAddresses} />
-
-        {/* Execution Panel */}
         <ExecutionPanel />
       </main>
     </div>

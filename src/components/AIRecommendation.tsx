@@ -7,31 +7,25 @@ function FormattedExplanation({ text }: { text: string }) {
   const lines = text.split(/\n/).filter((l) => l.trim());
 
   return (
-    <div className="space-y-2 text-sm text-white/55">
+    <div className="space-y-2 text-sm text-white/45">
       {lines.map((line, i) => {
         const trimmed = line.trim();
 
         if (/^[A-Z][A-Z\s]+:/.test(trimmed) || /^[A-Z][A-Z\s/()]+[:.—]/.test(trimmed)) {
           return (
-            <h4 key={i} className="font-semibold text-white pt-2 first:pt-0">
+            <h4 key={i} className="font-semibold text-white/80 pt-2 first:pt-0">
               {trimmed}
             </h4>
           );
         }
 
         if (trimmed.startsWith("•") || trimmed.startsWith("-")) {
-          return (
-            <p key={i} className="pl-3">
-              {trimmed}
-            </p>
-          );
+          return <p key={i} className="pl-3">{trimmed}</p>;
         }
 
         if (/^DECISION:/i.test(trimmed)) {
           return (
-            <p key={i} className="font-semibold text-white pt-2">
-              {trimmed}
-            </p>
+            <p key={i} className="font-semibold text-white/80 pt-2">{trimmed}</p>
           );
         }
 
@@ -48,20 +42,20 @@ export function AIRecommendation() {
   const { analysis, isAnalyzing, error, analyze } = useAllocationAnalysis();
 
   return (
-    <div className="h-full rounded-3xl bg-[#1F1F1F] border border-white/10 p-5 flex flex-col">
-      <h3 className="text-sm font-semibold text-white mb-4">AI Recommendation</h3>
+    <div className="h-full glass-card rounded-2xl p-5 flex flex-col">
+      <h3 className="text-sm font-semibold text-white/80 mb-4">AI Recommendation</h3>
 
-      {/* Risk Profile Selector */}
-      <div className="flex gap-1.5 p-1 bg-white/[0.06] rounded-2xl mb-4">
+      {/* Risk Profile — segmented control */}
+      <div className="flex gap-1 p-1 bg-white/[0.04] border border-white/[0.06] rounded-xl mb-4">
         {(["conservative", "balanced", "aggressive"] as const).map(
           (profile) => (
             <button
               key={profile}
               onClick={() => setRiskProfile(profile)}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-all capitalize ${
+              className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-all duration-300 capitalize ${
                 riskProfile === profile
-                  ? "bg-white text-[#131313] shadow-sm"
-                  : "text-white/55 hover:text-white"
+                  ? "bg-gradient-to-r from-[#0186DA]/20 to-[#B631A7]/20 text-white border border-[#8b5cf6]/20 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                  : "text-white/35 hover:text-white/60"
               }`}
             >
               {profile}
@@ -70,11 +64,11 @@ export function AIRecommendation() {
         )}
       </div>
 
-      {/* Analyze Button — Uniswap pink CTA */}
+      {/* CTA — gradient glow button */}
       <button
         onClick={() => analyze(riskProfile)}
         disabled={isAnalyzing}
-        className="w-full py-3.5 rounded-2xl text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-[#FC74FE]/15 text-[#FC74FE] hover:bg-[#FC74FE]/25 active:scale-[0.98]"
+        className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold text-white disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:transform-none"
       >
         {isAnalyzing ? (
           <span className="inline-flex items-center gap-2">
@@ -86,62 +80,54 @@ export function AIRecommendation() {
         )}
       </button>
 
-      {/* Error */}
       {error && (
-        <p className="text-sm text-[#FF593C] mt-3">{error}</p>
+        <p className="text-sm text-red-400 mt-3">{error}</p>
       )}
 
       {/* Results */}
       {analysis && (
-        <div className="space-y-4 text-sm mt-4 flex-1">
-          {/* Recommendation Badge */}
+        <div className="space-y-4 text-sm mt-5 flex-1">
+          {/* Badge */}
           <div className="text-center">
             {analysis.recommendation === "execute" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#21C95E]/15 px-4 py-1.5 text-[#21C95E] font-semibold text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 text-emerald-400 font-medium text-xs shadow-[0_0_15px_rgba(16,185,129,0.1)]">
                 Execute Rebalance
               </span>
             )}
             {analysis.recommendation === "hold" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FFBF17]/15 px-4 py-1.5 text-[#FFBF17] font-semibold text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-4 py-1.5 text-amber-400 font-medium text-xs">
                 Hold Position
               </span>
             )}
             {analysis.recommendation === "review" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FC74FE]/15 px-4 py-1.5 text-[#FC74FE] font-semibold text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 px-4 py-1.5 text-[#a78bfa] font-medium text-xs">
                 Review Needed
               </span>
             )}
           </div>
 
-          {/* Metrics Grid */}
+          {/* Metrics */}
           <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-2xl bg-white/[0.04] p-3 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-white/38 mb-0.5">APY Increase</p>
-              <p className="text-base font-bold text-[#21C95E]">
-                +{analysis.expectedApyIncrease.toFixed(2)}%
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/[0.04] p-3 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-white/38 mb-0.5">Risk Change</p>
-              <p className={`text-base font-bold ${analysis.riskScoreChange < 0 ? "text-[#21C95E]" : "text-[#FFBF17]"}`}>
-                {analysis.riskScoreChange > 0 ? "+" : ""}
-                {analysis.riskScoreChange.toFixed(1)}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/[0.04] p-3 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-white/38 mb-0.5">Gas Cost</p>
-              <p className="text-base font-bold text-white">
-                ${analysis.estimatedGasCost.toFixed(2)}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/[0.04] p-3 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-white/38 mb-0.5">Break-even</p>
-              <p className="text-base font-bold text-white">{analysis.breakEvenDays}d</p>
-            </div>
+            {[
+              { label: "APY Increase", value: `+${analysis.expectedApyIncrease.toFixed(2)}%`, gradient: true },
+              { label: "Risk Change", value: `${analysis.riskScoreChange > 0 ? "+" : ""}${analysis.riskScoreChange.toFixed(1)}`, warn: analysis.riskScoreChange > 0 },
+              { label: "Gas Cost", value: `$${analysis.estimatedGasCost.toFixed(2)}` },
+              { label: "Break-even", value: `${analysis.breakEvenDays}d` },
+            ].map((m) => (
+              <div key={m.label} className="rounded-xl bg-white/[0.03] border border-white/[0.05] p-3 text-center hover:bg-white/[0.05] transition-all duration-300">
+                <p className="text-[10px] font-mono uppercase tracking-[0.12em] text-white/30 mb-1">{m.label}</p>
+                <p className={`text-base font-bold ${
+                  m.gradient ? "bg-gradient-to-r from-[#06b6d4] to-[#8b5cf6] bg-clip-text text-transparent" :
+                  m.warn ? "text-amber-400" : "text-white/80"
+                }`}>
+                  {m.value}
+                </p>
+              </div>
+            ))}
           </div>
 
           {/* AI Explanation */}
-          <div className="rounded-2xl bg-white/[0.04] p-4">
+          <div className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-4">
             <FormattedExplanation text={analysis.aiExplanation} />
           </div>
         </div>
