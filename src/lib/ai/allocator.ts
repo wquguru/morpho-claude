@@ -35,7 +35,28 @@ Decision Rules:
 - If break-even period > 180 days, recommend "hold"
 - If APY increase < 0.1%, recommend "hold"
 - Avoid > 50% allocation to any single vault
-- Ensure cross-chain diversification when beneficial`;
+- Ensure cross-chain diversification when beneficial
+
+IMPORTANT: For each vault in recommendedAllocation, include the vault's human-readable name in the "vaultName" field (e.g. "Gauntlet USDC Core", "Steakhouse USDC").
+
+FORMAT for aiExplanation — use this exact structure with section headers and bullet points for readability:
+
+STRATEGY OVERVIEW:
+• One-line summary of the approach
+
+SELECTED VAULTS:
+• Vault Name (Chain) — why it was chosen, APY, risk score
+• (repeat for each vault)
+
+EXCLUDED VAULTS:
+• Vault Name — why it was excluded (e.g. reward-dependent APY, high risk)
+
+COST ANALYSIS:
+• Total gas cost and break-even period
+• Per-chain breakdown if relevant
+
+DECISION:
+• Final recommendation with key metrics (APY increase, break-even vs threshold)`;
 
   const q = query({
     prompt,

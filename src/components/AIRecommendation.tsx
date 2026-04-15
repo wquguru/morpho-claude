@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { useAllocationAnalysis } from "@/hooks/useAllocationAnalysis";
 import { useWidgetExecution } from "@/contexts/WidgetExecutionContext";
+import { useUserPositions } from "@/hooks/useUserPositions";
+import { useAccount } from "wagmi";
+import { DEMO_WALLET } from "@/lib/constants";
+
+const CHAIN_NAMES: Record<number, string> = { 1: "Ethereum", 8453: "Base", 42161: "Arbitrum" };
+
+function truncateAddress(addr: string): string {
+  return addr.length > 10 ? `${addr.slice(0, 6)}\u2026${addr.slice(-4)}` : addr;
+}
 
 function FormattedExplanation({ text }: { text: string }) {
   const lines = text.split(/\n/).filter((l) => l.trim());
@@ -52,7 +61,17 @@ export function AIRecommendation() {
   >("balanced");
   const { analysis, isAnalyzing, error, analyzedAt, analyze } =
     useAllocationAnalysis();
-  const { openForDeposit } = useWidgetExecution();
+  const { openForVault } = useWidgetExecution();
+  const { address: connectedAddress } = useAccount();
+  const address = connectedAddress ?? DEMO_WALLET;
+  const { positions, totalValue } = useUserPositions(address);
+
+  const currentAllocation = positions.map((p) => ({
+    vaultAddress: p.address,
+    chainId: p.chainId,
+    amount: p.balanceUsd.toFixed(2),
+    percentage: totalValue > 0 ? Math.round((p.balanceUsd / totalValue) * 100) : 0,
+  }));
 
   const hasResult = !!analysis;
 
@@ -89,7 +108,7 @@ export function AIRecommendation() {
 
       {/* CTA — gradient glow button */}
       <button
-        onClick={() => analyze(riskProfile)}
+        onClick={() => analyze(riskProfile, currentAllocation, totalValue)}
         disabled={isAnalyzing}
         className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:transform-none"
       >
@@ -151,20 +170,57 @@ export function AIRecommendation() {
             ))}
           </div>
 
+          {/* Vault Allocation Breakdown */}
+          {analysis.recommendedAllocation.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[10px] font-mono uppercase tracking-[0.12em] text-white/30">
+                Recommended Vaults
+              </p>
+              {analysis.recommendedAllocation.map((rec, i) => (
+                <button
+                  key={i}
+                  onClick={() => analysis.recommendation === "execute" && openForVault(rec)}
+                  disabled={analysis.recommendation !== "execute"}
+                  className="w-full text-left rounded-xl bg-white/[0.02] border border-white/[0.05] p-4 hover:bg-white/[0.05] hover:border-white/[0.10] transition-all duration-300 group disabled:opacity-60 disabled:cursor-default disabled:hover:bg-white/[0.02] disabled:hover:border-white/[0.05]"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-white/80 truncate mr-2">
+                      {rec.vaultName || truncateAddress(rec.vaultAddress)}
+                    </span>
+                    <span className="text-sm font-bold text-white/80 shrink-0">
+                      {rec.percentage}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[10px] font-medium text-white/40">
+                      {CHAIN_NAMES[rec.chainId] ?? `Chain ${rec.chainId}`}
+                    </span>
+                    <span className="font-mono text-[10px] text-white/20">
+                      {truncateAddress(rec.vaultAddress)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">
+                      ${parseFloat(rec.amount).toLocaleString()} USDC
+                    </span>
+                    {analysis.recommendation === "execute" && (
+                      <span className="text-[10px] text-white/20 group-hover:text-white/40 transition-colors">
+                        Click to execute &rarr;
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-white/30 mt-2 leading-relaxed">
+                    {rec.reason}
+                  </p>
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* AI Explanation */}
           <div className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-4">
             <FormattedExplanation text={analysis.aiExplanation} />
           </div>
-
-          {/* Execute via LI.FI Widget */}
-          {analysis.recommendation === "execute" && (
-            <button
-              onClick={() => openForDeposit(analysis)}
-              className="btn-gradient w-full py-3.5 rounded-xl text-sm font-semibold"
-            >
-              Execute via LI.FI
-            </button>
-          )}
         </div>
       )}
     </div>

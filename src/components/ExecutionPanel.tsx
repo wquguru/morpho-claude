@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ReallocationStep } from "@/lib/executor/reallocate";
+import { useAllocationAnalysis } from "@/hooks/useAllocationAnalysis";
 
 interface StepStatus {
   step: ReallocationStep;
@@ -17,8 +18,21 @@ const STATUS_CONFIG = {
 };
 
 export function ExecutionPanel() {
-  const [steps] = useState<StepStatus[]>([]);
+  const { analysis } = useAllocationAnalysis();
   const [isExecuting, setIsExecuting] = useState(false);
+
+  const steps: StepStatus[] = analysis
+    ? analysis.recommendedAllocation.map((rec) => ({
+        step: {
+          type: "deposit" as const,
+          vaultAddress: rec.vaultAddress,
+          chainId: rec.chainId,
+          amount: rec.amount,
+          txData: { to: rec.vaultAddress, data: "0x" },
+        },
+        status: "pending" as const,
+      }))
+    : [];
 
   const handleExecute = async () => {
     setIsExecuting(true);

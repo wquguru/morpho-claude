@@ -73,8 +73,17 @@ function setState(patch: Partial<AnalysisState>) {
   emit();
 }
 
+interface PositionForAnalysis {
+  vaultAddress: string;
+  chainId: number;
+  amount: string;
+  percentage: number;
+}
+
 async function runAnalysis(
-  riskProfile: "conservative" | "balanced" | "aggressive"
+  riskProfile: "conservative" | "balanced" | "aggressive",
+  positions?: PositionForAnalysis[],
+  totalValue?: number
 ) {
   if (inflightPromise) return; // already running
 
@@ -82,13 +91,14 @@ async function runAnalysis(
 
   inflightPromise = (async () => {
     try {
+      const amount = totalValue && totalValue > 0 ? totalValue.toFixed(2) : "10000";
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userAmount: "10000",
+          userAmount: amount,
           riskProfile,
-          currentAllocation: [],
+          currentAllocation: positions ?? [],
           gasPriceGwei: 30,
         }),
       });
@@ -120,14 +130,16 @@ function getSnapshot(): AnalysisState {
   return globalState;
 }
 
+const SERVER_SNAPSHOT: AnalysisState = {
+  analysis: null,
+  isAnalyzing: false,
+  error: null,
+  lastRiskProfile: null,
+  analyzedAt: null,
+};
+
 function getServerSnapshot(): AnalysisState {
-  return {
-    analysis: null,
-    isAnalyzing: false,
-    error: null,
-    lastRiskProfile: null,
-    analyzedAt: null,
-  };
+  return SERVER_SNAPSHOT;
 }
 
 function subscribe(onStoreChange: () => void) {
@@ -141,8 +153,12 @@ export function useAllocationAnalysis() {
   const state = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const analyze = useCallback(
-    (riskProfile: "conservative" | "balanced" | "aggressive") => {
-      runAnalysis(riskProfile);
+    (
+      riskProfile: "conservative" | "balanced" | "aggressive",
+      positions?: PositionForAnalysis[],
+      totalValue?: number
+    ) => {
+      runAnalysis(riskProfile, positions, totalValue);
     },
     []
   );

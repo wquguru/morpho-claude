@@ -25,7 +25,7 @@ const LiFiWidget = dynamic(
 );
 
 export function LiFiWidgetDialog() {
-  const { isOpen, mode, allocation, close } = useWidgetExecution();
+  const { isOpen, mode, selectedVault, close } = useWidgetExecution();
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
@@ -60,19 +60,18 @@ export function LiFiWidgetDialog() {
       providers: [ethereumProvider],
     };
 
-    if (mode === "deposit" && allocation?.recommendedAllocation?.[0]) {
-      const rec = allocation.recommendedAllocation[0];
+    if (mode === "deposit" && selectedVault) {
       return {
         ...base,
         subvariant: "custom",
         subvariantOptions: { custom: "deposit" },
-        toChain: rec.chainId,
-        toToken: rec.vaultAddress,
+        toChain: selectedVault.chainId,
+        toToken: selectedVault.vaultAddress,
       };
     }
 
     return base;
-  }, [mode, allocation]);
+  }, [mode, selectedVault]);
 
   if (!hydrated || !isOpen) return null;
 

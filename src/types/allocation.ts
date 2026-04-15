@@ -13,6 +13,7 @@ export interface AllocationInput {
 export interface AllocationOutput {
   recommendedAllocation: {
     vaultAddress: string;
+    vaultName: string;
     chainId: number;
     percentage: number;
     amount: string;

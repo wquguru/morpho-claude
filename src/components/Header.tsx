@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAccount } from "wagmi";
+import { useState, useRef, useEffect } from "react";
+import { useAccount, useDisconnect } from "wagmi";
 import { useWidgetExecution } from "@/contexts/WidgetExecutionContext";
 
 const NAV_ITEMS = [
@@ -14,7 +15,22 @@ const NAV_ITEMS = [
 export function Header() {
   const pathname = usePathname();
   const { address } = useAccount();
+  const { disconnect } = useDisconnect();
   const { openForConnect } = useWidgetExecution();
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    }
+    if (showMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showMenu]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/82 border-b border-white/[0.06]">
@@ -52,12 +68,46 @@ export function Header() {
             })}
           </nav>
         </div>
-        {/* Connect Wallet */}
-        <button onClick={openForConnect} className="btn-gradient rounded-xl px-5 py-2.5 text-sm font-semibold">
-          {address
-            ? `${address.slice(0, 6)}...${address.slice(-4)}`
-            : "Connect Wallet"}
-        </button>
+        {/* Wallet */}
+        {address ? (
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setShowMenu((v) => !v)}
+              className="btn-gradient rounded-xl px-5 py-2.5 text-sm font-semibold"
+            >
+              {address.slice(0, 6)}...{address.slice(-4)}
+            </button>
+            {showMenu && (
+              <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#16161f] border border-white/[0.08] shadow-xl overflow-hidden">
+                <button
+                  onClick={() => {
+                    openForConnect();
+                    setShowMenu(false);
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm text-white/70 hover:bg-white/[0.06] transition-colors"
+                >
+                  Manage Wallet
+                </button>
+                <button
+                  onClick={() => {
+                    disconnect();
+                    setShowMenu(false);
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-white/[0.06] transition-colors border-t border-white/[0.06]"
+                >
+                  Disconnect Wallet
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={openForConnect}
+            className="btn-gradient rounded-xl px-5 py-2.5 text-sm font-semibold"
+          >
+            Connect Wallet
+          </button>
+        )}
       </div>
     </header>
   );

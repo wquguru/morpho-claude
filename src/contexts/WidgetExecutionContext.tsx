@@ -7,14 +7,22 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { AllocationOutput } from "@/types/allocation";
+
+export interface VaultRecommendation {
+  vaultAddress: string;
+  vaultName: string;
+  chainId: number;
+  percentage: number;
+  amount: string;
+  reason: string;
+}
 
 interface WidgetExecutionState {
   isOpen: boolean;
   mode: "connect" | "deposit";
-  allocation: AllocationOutput | null;
+  selectedVault: VaultRecommendation | null;
   openForConnect: () => void;
-  openForDeposit: (allocation: AllocationOutput) => void;
+  openForVault: (vault: VaultRecommendation) => void;
   close: () => void;
 }
 
@@ -23,17 +31,17 @@ const WidgetExecutionContext = createContext<WidgetExecutionState | null>(null);
 export function WidgetExecutionProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<"connect" | "deposit">("connect");
-  const [allocation, setAllocation] = useState<AllocationOutput | null>(null);
+  const [selectedVault, setSelectedVault] = useState<VaultRecommendation | null>(null);
 
   const openForConnect = useCallback(() => {
     setMode("connect");
-    setAllocation(null);
+    setSelectedVault(null);
     setIsOpen(true);
   }, []);
 
-  const openForDeposit = useCallback((alloc: AllocationOutput) => {
+  const openForVault = useCallback((vault: VaultRecommendation) => {
     setMode("deposit");
-    setAllocation(alloc);
+    setSelectedVault(vault);
     setIsOpen(true);
   }, []);
 
@@ -41,7 +49,7 @@ export function WidgetExecutionProvider({ children }: { children: ReactNode }) {
 
   return (
     <WidgetExecutionContext.Provider
-      value={{ isOpen, mode, allocation, openForConnect, openForDeposit, close }}
+      value={{ isOpen, mode, selectedVault, openForConnect, openForVault, close }}
     >
       {children}
     </WidgetExecutionContext.Provider>

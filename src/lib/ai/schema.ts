@@ -7,6 +7,7 @@ export const allocationOutputSchema = {
         type: "object" as const,
         properties: {
           vaultAddress: { type: "string" as const },
+          vaultName: { type: "string" as const },
           chainId: { type: "number" as const },
           percentage: { type: "number" as const },
           amount: { type: "string" as const },
@@ -14,6 +15,7 @@ export const allocationOutputSchema = {
         },
         required: [
           "vaultAddress",
+          "vaultName",
           "chainId",
           "percentage",
           "amount",
