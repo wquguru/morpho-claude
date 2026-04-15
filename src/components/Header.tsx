@@ -18,7 +18,10 @@ export function Header() {
   const { disconnect } = useDisconnect();
   const { openForConnect } = useWidgetExecution();
   const [showMenu, setShowMenu] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -69,7 +72,7 @@ export function Header() {
           </nav>
         </div>
         {/* Wallet */}
-        {address ? (
+        {mounted && address ? (
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setShowMenu((v) => !v)}
