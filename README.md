@@ -2,6 +2,8 @@
 
 AI-powered DeFi yield optimizer for Morpho Vaults, built with Claude Agent SDK for the [DeFi Mullet Hackathon #1](https://github.com/brucexu-eth/defi-mullet-hackathon) (AI x Earn track).
 
+![MorphoClaude screenshot](docs/assets/site.png)
+
 ## What it does
 
 MorphoClaude acts as an AI-driven fund allocator that analyzes Morpho USDC vaults across Ethereum and Base, then recommends and executes optimal rebalancing strategies. It replaces manual optimization workflows with multi-agent AI analysis covering risk, yield, and gas costs.

@@ -16,8 +16,9 @@ export default function DashboardPage() {
   const { analysis } = useAllocationAnalysis();
 
   const totalValue = positions.reduce((s, p) => s + p.balanceUsd, 0);
+  const chainNames: Record<number, string> = { 1: "ETH", 8453: "Base", 42161: "ARB" };
   const currentPct = positions.map((p) => ({
-    name: p.name,
+    name: `${chainNames[p.chainId] ?? p.chainId} · ${p.vaultName}`,
     value: totalValue > 0 ? Math.round((p.balanceUsd / totalValue) * 100) : 0,
     apy: p.apy * 100,
     balanceUsd: p.balanceUsd,
@@ -25,7 +26,6 @@ export default function DashboardPage() {
     assetSymbol: p.assetSymbol,
   }));
 
-  const chainNames: Record<number, string> = { 1: "ETH", 8453: "Base", 42161: "ARB" };
   const recommendedPct = (analysis?.recommendedAllocation ?? []).map((r) => ({
     name: `${chainNames[r.chainId] ?? r.chainId} · ${r.vaultName || `${r.vaultAddress.slice(0, 6)}\u2026${r.vaultAddress.slice(-4)}`}`,
     value: r.percentage,

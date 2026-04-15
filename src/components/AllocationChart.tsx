@@ -6,7 +6,6 @@ import {
   Cell,
   ResponsiveContainer,
   Tooltip,
-  Legend,
 } from "recharts";
 
 const COLORS = ["#E8578A", "#06b6d4", "#f59e0b", "#10b981", "#6366f1"];
@@ -72,6 +71,33 @@ function CustomTooltip({ active, payload }: any) {
   );
 }
 
+function AllocationLegend({
+  data,
+}: {
+  data: AllocationDataItem[];
+}) {
+  return (
+    <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      {data.map((item, index) => (
+        <div
+          key={`${item.name}-${index}`}
+          className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-2.5"
+        >
+          <span
+            aria-hidden
+            className="mt-1 h-3 w-3 shrink-0 rounded-sm"
+            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm leading-5 text-white/80 break-words">{item.name}</p>
+            <p className="mt-1 text-xs text-white/45">{item.value}% allocation</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function AllocationChart({ type, data }: AllocationChartProps) {
   const title = type === "current" ? "Current Allocation" : "Recommended Allocation";
 
@@ -85,12 +111,12 @@ export function AllocationChart({ type, data }: AllocationChartProps) {
   return (
     <div className="h-full glass-card rounded-2xl p-5">
       <h3 className="text-sm font-semibold text-white/80 mb-3">{title}</h3>
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height={240}>
         <PieChart>
           <Pie
             data={chartData}
             cx="50%"
-            cy="50%"
+            cy="46%"
             innerRadius={50}
             outerRadius={80}
             paddingAngle={2}
@@ -106,15 +132,9 @@ export function AllocationChart({ type, data }: AllocationChartProps) {
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          {hasData && (
-            <Legend
-              formatter={(value) => (
-                <span className="text-xs text-white/50">{value}</span>
-              )}
-            />
-          )}
         </PieChart>
       </ResponsiveContainer>
+      {hasData && <AllocationLegend data={chartData} />}
     </div>
   );
 }

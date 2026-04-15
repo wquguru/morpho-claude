@@ -6,6 +6,7 @@ import { getUserPositions, fetchAllVaults } from "@/lib/lifi/earn-client";
 // Normalized position for UI consumption
 export interface NormalizedPosition {
   name: string;
+  vaultName: string;
   protocolName: string;
   chainId: number;
   address: string;
@@ -39,14 +40,26 @@ export function useUserPositions(address?: string) {
     }
   }
 
+  // Build vault name lookup: "chainId-address" -> human-readable vault name
+  const vaultNameMap = new Map<string, string>();
+  if (vaults) {
+    for (const v of vaults) {
+      const key = `${v.chainId}-${v.address.toLowerCase()}`;
+      vaultNameMap.set(key, v.name);
+    }
+  }
+
   // Normalize the raw API response
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const positions: NormalizedPosition[] = (data?.positions ?? []).map((p: any) => {
     const key = `${p.chainId}-${(p.address ?? "").toLowerCase()}`;
+    const vaultName =
+      vaultNameMap.get(key) ??
+      (p.asset?.name ? `${p.protocolName} ${p.asset.name}` : p.protocolName ?? "Unknown");
+
     return {
-      name: p.asset?.name
-        ? `${p.protocolName} ${p.asset.name}`
-        : p.protocolName ?? "Unknown",
+      name: vaultName,
+      vaultName,
       protocolName: p.protocolName ?? "Unknown",
       chainId: p.chainId ?? 0,
       address: p.address ?? "",
