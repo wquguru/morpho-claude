@@ -1,5 +1,6 @@
 import { encodeFunctionData, parseUnits, parseAbi } from "viem";
 import { getDepositQuote } from "../lifi/earn-client";
+import { SUPPORTED_CHAINS } from "../constants";
 
 export interface ReallocationStep {
   type: "withdraw" | "deposit";
@@ -71,11 +72,12 @@ export async function prepareReallocation(
     const depositAmount = parseFloat(target.amount) - currentAmount;
 
     if (depositAmount > 0) {
-      const chainName = target.chainId === 1 ? "eth" : "base";
-      const usdcAddress =
-        target.chainId === 1
-          ? "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-          : "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+      const chain = SUPPORTED_CHAINS[target.chainId as keyof typeof SUPPORTED_CHAINS];
+      if (!chain) {
+        throw new Error(`Unsupported chain: ${target.chainId}`);
+      }
+      const chainName = chain.shortName;
+      const usdcAddress = chain.usdc;
 
       const quote = await getDepositQuote(
         chainName,

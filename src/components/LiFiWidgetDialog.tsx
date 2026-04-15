@@ -55,7 +55,7 @@ export function LiFiWidgetDialog() {
           borderRadius: "16px",
         },
       },
-      chains: { allow: [1, 8453] },
+      chains: { allow: [1, 8453, 42161] },
       hiddenUI: ["poweredBy"],
       providers: [ethereumProvider],
     };

@@ -8,6 +8,12 @@ import type { AllocationInput, AllocationOutput } from "@/types/allocation";
 export async function analyzeAllocation(
   input: AllocationInput
 ): Promise<AllocationOutput> {
+  const totalValueUsd = parseFloat(input.userAmount);
+  const isSmallPortfolio = totalValueUsd < 10_000;
+  const chainGuidance = isSmallPortfolio
+    ? `\n\nCRITICAL: This portfolio is under $10,000 USD. DO NOT recommend Ethereum (chain 1) vaults — gas costs on Ethereum L1 are too high relative to the portfolio size and would erode returns. Focus ONLY on L2 chains: Base (8453) and Arbitrum (42161). When discovering vaults, use chains="base,arb" to skip Ethereum entirely.`
+    : `\n\nAvailable chains: Ethereum (1), Base (8453), Arbitrum (42161). Search all chains using chains="eth,base,arb" for the best opportunities.`;
+
   const prompt = `You are MorphoClaude, an AI-powered DeFi fund allocator.
 
 Analyze the user's current Morpho Vault allocation and recommend an optimal rebalancing strategy.
@@ -17,10 +23,11 @@ User Profile:
 - Risk Profile: ${input.riskProfile}
 - Current Allocation: ${JSON.stringify(input.currentAllocation, null, 2)}
 - Current Gas Price: ${input.gasPriceGwei} Gwei
+${chainGuidance}
 
 Instructions:
 1. Use morpho-tools to fetch available USDC vaults and their allocations
-2. Use lifi-tools to discover vaults and cross-reference data
+2. Use lifi-tools to discover vaults across all available chains and cross-reference data
 3. Delegate risk analysis to the risk-analyzer subagent
 4. Delegate yield optimization to the yield-optimizer subagent
 5. Use gas-estimator to calculate transaction costs

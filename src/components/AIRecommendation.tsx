@@ -7,7 +7,11 @@ import { useUserPositions } from "@/hooks/useUserPositions";
 import { useAccount } from "wagmi";
 import { DEMO_WALLET } from "@/lib/constants";
 
-const CHAIN_NAMES: Record<number, string> = { 1: "Ethereum", 8453: "Base", 42161: "Arbitrum" };
+import { SUPPORTED_CHAINS } from "@/lib/constants";
+
+const CHAIN_NAMES: Record<number, string> = Object.fromEntries(
+  Object.entries(SUPPORTED_CHAINS).map(([id, c]) => [id, c.name])
+);
 
 function truncateAddress(addr: string): string {
   return addr.length > 10 ? `${addr.slice(0, 6)}\u2026${addr.slice(-4)}` : addr;

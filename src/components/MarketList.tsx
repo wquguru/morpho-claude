@@ -8,6 +8,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { fetchAllVaults, type EarnVault } from "@/lib/lifi/earn-client";
+import { DEFAULT_CHAINS_STRING } from "@/lib/constants";
+import { VaultDetailSheet } from "@/components/VaultDetailSheet";
 
 interface MarketListProps {
   heldAddresses?: Set<string>;
@@ -17,6 +19,7 @@ const CHAIN_OPTIONS = [
   { label: "All Chains", value: "" },
   { label: "Ethereum", value: "Ethereum" },
   { label: "Base", value: "Base" },
+  { label: "Arbitrum", value: "Arbitrum One" },
 ];
 
 const TVL_OPTIONS = [
@@ -67,15 +70,16 @@ function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
 export function MarketList({ heldAddresses }: MarketListProps) {
   const [chainFilter, setChainFilter] = useState("");
   const [assetFilter, setAssetFilter] = useState("");
-  const [minTvl, setMinTvl] = useState(1_000_000);
+  const [minTvl, setMinTvl] = useState(100_000_000);
   const [heldOnly, setHeldOnly] = useState(false);
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState<SortField>("totalApy");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [selectedVault, setSelectedVault] = useState<EarnVault | null>(null);
 
   const { data: vaults, isLoading } = useQuery({
     queryKey: ["vaults"],
-    queryFn: () => fetchAllVaults("eth,base"),
+    queryFn: () => fetchAllVaults(DEFAULT_CHAINS_STRING),
     refetchInterval: 300_000,
   });
 
@@ -320,7 +324,8 @@ export function MarketList({ heldAddresses }: MarketListProps) {
                 return (
                   <tr
                     key={`${vault.chainId}-${vault.address}`}
-                    className={`border-t border-white/[0.04] transition-colors hover:bg-white/[0.03] ${
+                    onClick={() => setSelectedVault(vault)}
+                    className={`border-t border-white/[0.04] transition-colors hover:bg-white/[0.03] cursor-pointer ${
                       isHeld ? "bg-white/[0.02]" : ""
                     }`}
                   >
@@ -361,6 +366,11 @@ export function MarketList({ heldAddresses }: MarketListProps) {
           </tbody>
         </table>
       </div>
+
+      <VaultDetailSheet
+        vault={selectedVault}
+        onOpenChange={(open) => { if (!open) setSelectedVault(null); }}
+      />
     </div>
   );
 }

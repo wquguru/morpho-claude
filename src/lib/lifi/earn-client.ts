@@ -20,7 +20,7 @@ export interface EarnVault {
 }
 
 export async function fetchAllVaults(
-  chains: string = "eth,base",
+  chains: string = "eth,base,arb",
   tokens?: string
 ): Promise<EarnVault[]> {
   const allVaults: EarnVault[] = [];
@@ -36,6 +36,9 @@ export async function fetchAllVaults(
     if (cursor) url.searchParams.set("cursor", cursor);
 
     const res = await fetch(url.toString());
+    if (!res.ok) {
+      throw new Error(`LiFi Earn API error: ${res.status} ${res.statusText}`);
+    }
     const data = await res.json();
 
     allVaults.push(...(data.data ?? []));
@@ -62,18 +65,27 @@ export async function getDepositQuote(
   url.searchParams.set("fromAmount", fromAmount);
   url.searchParams.set("fromAddress", userAddress);
 
+  const apiKey = process.env.LIFI_API_KEY;
+  if (!apiKey) {
+    throw new Error("LIFI_API_KEY environment variable is not set");
+  }
+
   const res = await fetch(url.toString(), {
     headers: {
-      "x-lifi-api-key": process.env.LIFI_API_KEY!,
+      "x-lifi-api-key": apiKey,
     },
   });
+
+  if (!res.ok) {
+    throw new Error(`LiFi Composer API error: ${res.status} ${res.statusText}`);
+  }
 
   return res.json();
 }
 
 export async function getUserPositions(
   userAddress: string,
-  chains: string = "eth,base"
+  chains: string = "eth,base,arb"
 ) {
   // IMPORTANT: endpoint is /v1/earn/portfolio/{addr}/positions
   const url = new URL(
@@ -83,5 +95,8 @@ export async function getUserPositions(
   url.searchParams.set("protocols", "morpho");
 
   const res = await fetch(url.toString());
+  if (!res.ok) {
+    throw new Error(`LiFi Portfolio API error: ${res.status} ${res.statusText}`);
+  }
   return res.json();
 }

@@ -2,14 +2,14 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { mainnet, base } from "wagmi/chains";
+import { mainnet, base, arbitrum } from "wagmi/chains";
 import { useState, type ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WidgetExecutionProvider } from "@/contexts/WidgetExecutionContext";
 import { LiFiWidgetDialog } from "@/components/LiFiWidgetDialog";
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, base],
+  chains: [mainnet, base, arbitrum],
   transports: {
     [mainnet.id]: http(
       process.env.NEXT_PUBLIC_ALCHEMY_KEY
@@ -19,6 +19,11 @@ export const wagmiConfig = createConfig({
     [base.id]: http(
       process.env.NEXT_PUBLIC_ALCHEMY_KEY
         ? `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`
+        : undefined
+    ),
+    [arbitrum.id]: http(
+      process.env.NEXT_PUBLIC_ALCHEMY_KEY
+        ? `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`
         : undefined
     ),
   },

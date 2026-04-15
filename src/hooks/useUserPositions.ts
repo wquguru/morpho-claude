@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getUserPositions, fetchAllVaults } from "@/lib/lifi/earn-client";
+import { DEFAULT_CHAINS_STRING } from "@/lib/constants";
 
 // Normalized position for UI consumption
 export interface NormalizedPosition {
@@ -27,7 +28,7 @@ export function useUserPositions(address?: string) {
   // Fetch vaults to cross-reference APY
   const { data: vaults, isLoading: vaultsLoading } = useQuery({
     queryKey: ["vaults"],
-    queryFn: () => fetchAllVaults("eth,base"),
+    queryFn: () => fetchAllVaults(DEFAULT_CHAINS_STRING),
     refetchInterval: 300_000,
   });
 
